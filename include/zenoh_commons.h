@@ -126,8 +126,8 @@ typedef enum z_sample_kind_t {
  * An array of bytes.
  */
 typedef struct z_bytes_t {
-  const uint8_t *start;
   size_t len;
+  const uint8_t *start;
 } z_bytes_t;
 /**
  * Represents a Zenoh ID.
@@ -523,9 +523,6 @@ typedef struct z_value_t {
  *     z_query_target_t target: The Queryables that should be target of the query.
  *     z_query_consolidation_t consolidation: The replies consolidation strategy to apply on replies to the query.
  *     z_value_t with_value: An optional value to attach to the query.
- *
- *         **WARNING: This option has been marked as unstable:
- *         It works as advertised, but may change in a future release.**
  */
 typedef struct z_get_options_t {
   enum z_query_target_t target;
@@ -536,8 +533,8 @@ typedef struct z_get_options_t {
  * An borrowed array of borrowed, zenoh allocated, NULL terminated strings.
  */
 typedef struct z_str_array_t {
-  const char *const *val;
   size_t len;
+  const char *const *val;
 } z_str_array_t;
 /**
  * A reference-type hello message returned by a zenoh entity to a scout message sent with `z_scout`.
@@ -1115,18 +1112,19 @@ struct z_owned_keyexpr_t z_keyexpr_concat(struct z_keyexpr_t left,
  */
 void z_keyexpr_drop(struct z_owned_keyexpr_t *keyexpr);
 /**
- * Returns ``1`` if `left` and `right` define equal sets, ``0`` otherwise.
+ * Returns ``0`` if both ``left`` and ``right`` are equal. Otherwise, it returns a ``-1``, or other ``negative value`` for errors.
  */
-int8_t z_keyexpr_equals(struct z_keyexpr_t left, struct z_keyexpr_t right);
+int8_t z_keyexpr_equals(struct z_keyexpr_t left,
+                        struct z_keyexpr_t right);
 /**
- * Returns ``1`` if the set defined by `left` contains every key belonging to the set defined by `right`, ``0`` if they don't.
- * Returns negative values in case of error (if one of the key expressions is in an invalid state).
+ * Returns ``0`` if ``left`` includes ``right``, i.e. the set defined by ``left`` contains every key belonging to the set
+ * defined by ``right``. Otherwise, it returns a ``-1``, or other ``negative value`` for errors.
  */
 int8_t z_keyexpr_includes(struct z_keyexpr_t left,
                           struct z_keyexpr_t right);
 /**
- * Returns ``1`` if `left` and `right` define sets that have at least one key in common, ``0`` if they don't.
- * Returns negative values in case of error (if one of the key expressions is in an invalid state).
+ * Returns ``0`` if the keyexprs intersect, i.e. there exists at least one key which is contained in both of the
+ * sets defined by ``left`` and ``right``. Otherwise, it returns a ``-1``, or other ``negative value`` for errors.
  */
 int8_t z_keyexpr_intersects(struct z_keyexpr_t left,
                             struct z_keyexpr_t right);
